@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>下松子</title>
+	<script src="../lib/jquery.min.js"></script>
+	<style>
+		body{
+			background-color:rgb(4, 64, 97);
+		}
+	</style>
+</head>
+<body>
+	<div>
+		<button class="start switch">开始</button>
+		<button class="stop switch">暂停</button>
+	</div>
+	<script>
+		$(function(){
+			var pic=['https://codersunnylau.github.io/Demos/demos/images/acorn_m.png'];
+			var isOn = false;
+			$('.switch').on('click', function(){
+				if($(this).hasClass('stop')){
+					stop();
+				}else if(!isOn){
+					start();
+				}
+			});
+			function start(){
+				isOn = true;
+				snow($("body"),pic,300,5000,900);
+			}
+			function stop(){
+				clearTimeout(tt1);
+				isOn = false;
+			}
+		});
+		var tt1, tt2;
+		function snow(con,pic,frequence,speed,height){
+			var imgs = new Array(pic.length),
+				complete = 0,
+				conWidth = con.width();
+			var excursion = 0,
+				ww=$(window).width();
+			con.css({"position":"relative"});
+			for(var i = 0; i < pic.length; i++){
+				if(pic[i] != ""){
+					imgs[i] = new Image();
+					imgs[i].src = pic[i];
+					$(imgs[i]).css({"transition":"transform "+speed/1000+"s,width "+speed/1000+"s,height "+speed/1000+"s,left "+speed/1000+"s"});
+					imgs[i].onload=function(){
+						complete++;
+						if(complete==pic.length){
+							timeout(imgs,frequence,speed,height);
+						}
+					}
+				}
+			}
+			function timeout(img,f,s,h){
+				tt1 = setTimeout(function(){
+					var i=parseInt(Math.random()*img.length);
+					var obj=$(img[i]).clone();
+					var size=1-Math.random()*0.6;
+					var wsize=img[i].width*size;
+					var hsize=img[i].height*size;
+					var left=(ww-50)*Math.random();
+					var opacity=1;
+					var rotate=360*(Math.random()*2-1);
+					var zleft=left-excursion*200,zsize=size;
+					if(excursion>0){
+						if(left<ww/2){
+							zsize=size*(1-0.5*excursion);
+						}else{
+							zsize=size*(1+0.5*excursion);
+						}
+					}else{
+						if(left<ww/2){
+							zsize=size*(1-0.5*excursion);
+						}else{
+							zsize=size*(1+0.5*excursion);
+						}
+					}
+					var zwsize=wsize*zsize;
+					var zhsize=hsize*zsize;
+					obj.addClass("float").width(wsize).height(hsize).css({
+						left:left+'px',
+						'will-change':'transform,width,height,left',
+						'transform': 'translate3d(0, 0, 0)',
+						'z-index':999,
+						'pointer-events':'none',
+						'position':'fixed',
+						'top':'-100px',
+						'left':left+"px",
+						'opacity':opacity,
+						'transform':'rotate('+rotate+'deg)'
+					});
+					con.append(obj);
+					obj.animate({
+							top:(h||400)+"px",
+							opacity:0
+						},
+						speed,
+						function(){
+							obj.remove();
+						}).css({
+							"transform":"rotate(0deg)",
+							"width":zwsize+"px",
+							"height":zhsize+"px",
+							"left":zleft+"px"
+						});
+					tt2 = timeout(imgs,(frequence||500)*Math.random(),s,h);
+				},f||500);
+			}
+			if(supportCss3("transition")){
+				var tt;
+				$(window).mousemove(function(e){
+					var clientX=e.clientX;
+					excursion=(clientX-ww/2)/(ww/2);
+					clearTimeout(tt);
+					setTimeout(function(){
+						excursion=0;
+					},3000);
+				});
+			}
+		}
+		function supportCss3(style){
+			var prefix = ['webkit', 'Moz', 'ms', 'o'],
+				i,
+				humpString = [],
+				htmlStyle = document.documentElement.style,
+				_toHumb = function (string) {
+					return string.replace(/-(\w)/g, function ($0, $1) {
+						return $1.toUpperCase();
+					});
+				};
+			for(i in prefix){
+				humpString.push(_toHumb(prefix[i] + '-' + style));
+			}
+			humpString.push(_toHumb(style));
+			for(i in humpString){
+				if (humpString[i] in htmlStyle){
+					return true;
+				}
+			}
+			return false;
+		}
+	</script>
+</body>
+</html>
