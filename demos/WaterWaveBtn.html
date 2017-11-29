@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <script src="../lib/jquery.min.js"></script>
+    <title>Water Wave Button</title>
+    <style type="text/css">
+        .btn{
+            position:relative;
+            width:90px;
+            height:30px;
+            overflow:hidden;
+            cursor:pointer;
+            font:bold 20px/30px "Calibri","Microsoft YaHei";
+            color:#D9D;
+            text-align:center;
+            user-select:none;
+            -webkit-user-select:none;
+            -ms-user-select:none;
+        }
+        .btn:hover{
+            color:#C36;
+        }
+	.circle{
+            width:0;
+            height:0;
+            background:#C36;
+            border-radius:50%;
+            position:absolute;
+            opacity:0.5;
+            left:50%;
+            top:50%;
+        }
+        .button{
+            width:100%;
+            height:100%;
+            z-index:99;
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+    <div class="btn">
+        <div class="button">button</div>
+        <div class="circle"></div>
+    </div>
+    <script type="text/javascript">
+	var x,y;
+	$('.btn').mousedown(function(event){
+		x = event.offsetX + "px";
+		y = event.offsetY + "px";
+		$('.circle').stop()
+			    .css({
+				'left':x,
+				'top':y,
+				'width':0,
+				'height':0,
+				'margin-top':0,
+				'margin-left':0,
+				'opacity':0.5
+			    })
+			    .animate({
+				'width':'160px',
+				'height':'160px',
+				'margin-top':'-80px',
+				'margin-left':'-80px',
+				'opacity':0
+			    },500);
+	});
+    </script>
+</body>
+</html>
